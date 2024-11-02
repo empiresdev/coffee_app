@@ -256,5 +256,78 @@ void main() {
         ],
       );
     });
+
+    group('loadFavoriteImage', () {
+      late CoffeeState initialState;
+      const localCoffeeImage = LocalCoffeeImage('test.jpg');
+
+      blocTest<CoffeeCubit, CoffeeState>(
+        'emits the local image when current state is initial',
+        setUp: () {
+          initialState = const CoffeeState(
+            status: CoffeeStatus.initial,
+            favorites: [localCoffeeImage],
+          );
+        },
+        build: () => sut,
+        seed: () => initialState,
+        act: (cubit) => cubit.loadFavoriteImage(localCoffeeImage),
+        expect: () => <CoffeeState>[
+          const CoffeeState(
+            status: CoffeeStatus.success,
+            image: localCoffeeImage,
+            favorites: [localCoffeeImage],
+          ),
+        ],
+      );
+
+      blocTest<CoffeeCubit, CoffeeState>(
+        'emits the local image when current state has a remote image ',
+        setUp: () {
+          initialState = const CoffeeState(
+            status: CoffeeStatus.success,
+            image: remoteCoffeeImage,
+            favorites: [localCoffeeImage],
+          );
+        },
+        build: () => sut,
+        seed: () => initialState,
+        act: (cubit) => cubit.loadFavoriteImage(localCoffeeImage),
+        expect: () => <CoffeeState>[
+          const CoffeeState(
+            status: CoffeeStatus.success,
+            image: localCoffeeImage,
+            favorites: [localCoffeeImage],
+          ),
+        ],
+      );
+
+      blocTest<CoffeeCubit, CoffeeState>(
+        'emits the local image when current state is another local image ',
+        setUp: () {
+          initialState = const CoffeeState(
+            status: CoffeeStatus.success,
+            image: LocalCoffeeImage('previous image.png'),
+            favorites: [
+              localCoffeeImage,
+              LocalCoffeeImage('previous image.png'),
+            ],
+          );
+        },
+        build: () => sut,
+        seed: () => initialState,
+        act: (cubit) => cubit.loadFavoriteImage(localCoffeeImage),
+        expect: () => <CoffeeState>[
+          const CoffeeState(
+            status: CoffeeStatus.success,
+            image: localCoffeeImage,
+            favorites: [
+              localCoffeeImage,
+              LocalCoffeeImage('previous image.png'),
+            ],
+          ),
+        ],
+      );
+    });
   });
 }

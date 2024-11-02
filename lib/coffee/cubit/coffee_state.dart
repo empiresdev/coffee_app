@@ -28,6 +28,6 @@ final class CoffeeState extends Equatable {
         status: status ?? this.status,
         image: image ?? this.image,
         message: message ?? this.message,
-        favorites: favorites ?? favorites,
+        favorites: favorites ?? this.favorites,
       );
 }

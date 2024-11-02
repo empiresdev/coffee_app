@@ -54,4 +54,13 @@ class CoffeeCubit extends Cubit<CoffeeState> {
       emit(state.copyWith(favorites: []));
     }
   }
+
+  Future<void> loadFavoriteImage(LocalCoffeeImage localCoffeeImage) async {
+    emit(
+      state.copyWith(
+        status: CoffeeStatus.success,
+        image: localCoffeeImage,
+      ),
+    );
+  }
 }
