@@ -186,5 +186,75 @@ void main() {
         ],
       );
     });
+
+    group('loadAllFavoriteImages', () {
+      late CoffeeState initialState;
+      const favorites = <LocalCoffeeImage>[
+        LocalCoffeeImage('test.jpg'),
+        LocalCoffeeImage('test.png'),
+      ];
+
+      blocTest<CoffeeCubit, CoffeeState>(
+        'emits favorite list from localRepository when '
+        'state is initial',
+        setUp: () {
+          initialState = const CoffeeState(status: CoffeeStatus.initial);
+          when(() => localRepository.fetchAllFavorites())
+              .thenAnswer((_) async => favorites);
+        },
+        build: () => sut,
+        seed: () => initialState,
+        act: (cubit) => cubit.loadAllFavoriteImages(),
+        expect: () => <CoffeeState>[
+          const CoffeeState(status: CoffeeStatus.initial, favorites: favorites),
+        ],
+      );
+
+      blocTest<CoffeeCubit, CoffeeState>(
+        'emits favorite list from localRepository when '
+        'state is success',
+        setUp: () {
+          initialState = const CoffeeState(
+            status: CoffeeStatus.success,
+            image: remoteCoffeeImage,
+            favorites: [],
+          );
+          when(() => localRepository.fetchAllFavorites())
+              .thenAnswer((_) async => favorites);
+        },
+        build: () => sut,
+        seed: () => initialState,
+        act: (cubit) => cubit.loadAllFavoriteImages(),
+        expect: () => <CoffeeState>[
+          CoffeeState(
+            status: initialState.status,
+            image: initialState.image,
+            favorites: favorites,
+          ),
+        ],
+      );
+
+      blocTest<CoffeeCubit, CoffeeState>(
+        'emits empty favorite list when '
+        'localRepository throws',
+        setUp: () {
+          when(() => localRepository.fetchAllFavorites())
+              .thenThrow(Exception('error'));
+        },
+        build: () => sut,
+        seed: () => const CoffeeState(
+          status: CoffeeStatus.success,
+          image: remoteCoffeeImage,
+        ),
+        act: (cubit) => cubit.loadAllFavoriteImages(),
+        expect: () => <CoffeeState>[
+          const CoffeeState(
+            status: CoffeeStatus.success,
+            image: remoteCoffeeImage,
+            favorites: [],
+          ),
+        ],
+      );
+    });
   });
 }
