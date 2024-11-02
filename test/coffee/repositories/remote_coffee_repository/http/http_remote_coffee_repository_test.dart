@@ -1,20 +1,17 @@
 import 'package:coffee_app/coffee/exceptions/exceptions.dart';
 import 'package:coffee_app/coffee/repositories/remote_coffee_repository/remote_coffee_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/testing.dart' as http;
+
+import '../../helpers/helpers.dart';
 
 void main() {
   group('fetchRandomImage', () {
     test('returns a valid RemoteCoffeeImage', () async {
-      final client = http.MockClient((request) async {
-        const body = '''
+      final client = generateHttpMockClient(200, '''
 {
   "file": "https://coffee.alexflipnote.dev/2GiUIZKXR1s_coffee.jpg"
 }
-''';
-        return http.Response(body, 200);
-      });
+''');
       final sut = HttpRemoteCoffeeRepository(client);
 
       final result = await sut.fetchRandomImage();
@@ -27,9 +24,7 @@ void main() {
     test(
         'throws a RemoteServerException when response code '
         'is different from 200', () async {
-      final client = http.MockClient((request) async {
-        return http.Response('', 500);
-      });
+      final client = generateHttpMockClient(500, '');
 
       final sut = HttpRemoteCoffeeRepository(client);
 
@@ -40,9 +35,7 @@ void main() {
     test(
         'throws a InvalidRemoteCoffeeImageException when '
         'response data is invalid', () async {
-      final client = http.MockClient((request) async {
-        return http.Response('invalid data', 200);
-      });
+      final client = generateHttpMockClient(200, 'invalid data');
 
       final sut = HttpRemoteCoffeeRepository(client);
 
