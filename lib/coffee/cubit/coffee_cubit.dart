@@ -14,12 +14,12 @@ class CoffeeCubit extends Cubit<CoffeeState> {
   final RemoteCoffeeRepository remoteRepository;
 
   Future<void> fetchRemoteImage() async {
-    emit(const CoffeeState(status: CoffeeStatus.loading));
+    emit(CoffeeState(status: CoffeeStatus.loading, image: state.image));
     try{
       final coffeeImage = await remoteRepository.fetchRandomImage();
       emit(CoffeeState(status: CoffeeStatus.success, image: coffeeImage));
     } on Exception {
-      emit(const CoffeeState(status: CoffeeStatus.failure));
+      emit(CoffeeState(status: CoffeeStatus.failure, image: state.image));
     }
   }
 }
