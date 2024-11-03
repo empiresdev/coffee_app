@@ -37,7 +37,7 @@ class CoffeeCubit extends Cubit<CoffeeState> {
       emit(
         CoffeeState(
           status: CoffeeStatus.success,
-          image: currentImage,
+          image: favorites.last,
           favorites: favorites,
         ),
       );
