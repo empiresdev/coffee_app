@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:coffee_app/coffee/cubit/coffee_cubit.dart';
+import 'package:coffee_app/coffee/view/helpers/failure_messages.dart';
 import 'package:coffee_app/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +22,9 @@ class FavoritesPage extends StatelessWidget {
           final favorites = state.favorites ?? [];
           if (favorites.isEmpty) {
             return Center(
-              child: Text(l10n.favoritesEmptyErrorMessage),
+              child: Text(
+                getFailureMessage(l10n, 'favoritesEmptyErrorMessage'),
+              ),
             );
           }
           return SafeArea(

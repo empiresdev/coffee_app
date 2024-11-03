@@ -26,7 +26,13 @@ class CoffeeCubit extends Cubit<CoffeeState> {
       final coffeeImage = await remoteRepository.fetchRandomImage();
       emit(state.copyWith(status: CoffeeStatus.success, image: coffeeImage));
     } on Exception {
-      emit(state.copyWith(status: CoffeeStatus.failure, image: state.image));
+      emit(
+        state.copyWith(
+          status: CoffeeStatus.failure,
+          image: state.image,
+          messageId: 'fetchRandomImageFailureMessage',
+        ),
+      );
     }
   }
 
@@ -46,7 +52,13 @@ class CoffeeCubit extends Cubit<CoffeeState> {
         ),
       );
     } on Exception {
-      emit(state.copyWith(status: CoffeeStatus.failure, image: currentImage));
+      emit(
+        state.copyWith(
+          status: CoffeeStatus.failure,
+          image: currentImage,
+          messageId: 'saveImageFailureMessage',
+        ),
+      );
     }
   }
 

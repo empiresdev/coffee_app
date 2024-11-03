@@ -6,28 +6,28 @@ final class CoffeeState extends Equatable {
   const CoffeeState({
     required this.status,
     this.image,
-    this.message,
+    this.messageId,
     this.favorites,
   });
 
   final CoffeeStatus status;
   final CoffeeImage? image;
-  final String? message;
+  final String? messageId;
   final List<LocalCoffeeImage>? favorites;
 
   @override
-  List<Object?> get props => [status, image, message, favorites];
+  List<Object?> get props => [status, image, messageId, favorites];
 
   CoffeeState copyWith({
     CoffeeStatus? status,
     CoffeeImage? image,
-    String? message,
+    String? messageId,
     List<LocalCoffeeImage>? favorites,
   }) =>
       CoffeeState(
         status: status ?? this.status,
         image: image ?? this.image,
-        message: message ?? this.message,
+        messageId: messageId ?? this.messageId,
         favorites: favorites ?? this.favorites,
       );
 

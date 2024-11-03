@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:coffee_app/coffee/cubit/coffee_cubit.dart';
 import 'package:coffee_app/coffee/models/coffee_image.dart';
+import 'package:coffee_app/coffee/view/helpers/failure_messages.dart';
 import 'package:coffee_app/coffee/view/pages/favorites_page.dart';
 import 'package:coffee_app/l10n/l10n.dart';
 import 'package:flutter/material.dart';
@@ -45,13 +46,14 @@ class CoffeePage extends StatelessWidget {
               child: BlocConsumer<CoffeeCubit, CoffeeState>(
                 listener: (BuildContext context, CoffeeState state) {
                   if (state.status == CoffeeStatus.failure) {
+                    final messageId = state.messageId;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         dismissDirection: DismissDirection.none,
                         showCloseIcon: true,
                         backgroundColor: Theme.of(context).colorScheme.error,
                         content: Text(
-                          state.message ?? l10n.errorMessage,
+                          getFailureMessage(context.l10n, messageId),
                         ),
                       ),
                     );

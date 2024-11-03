@@ -62,7 +62,10 @@ void main() {
           act: (cubit) => cubit.fetchRemoteImage(),
           expect: () => <CoffeeState>[
             const CoffeeState(status: CoffeeStatus.loading),
-            const CoffeeState(status: CoffeeStatus.failure),
+            const CoffeeState(
+              status: CoffeeStatus.failure,
+              messageId: 'fetchRandomImageFailureMessage',
+            ),
           ],
         );
       });
@@ -110,7 +113,11 @@ void main() {
           act: (cubit) => cubit.fetchRemoteImage(),
           expect: () => <CoffeeState>[
             CoffeeState(status: CoffeeStatus.loading, image: startImage),
-            CoffeeState(status: CoffeeStatus.failure, image: startImage),
+            CoffeeState(
+              status: CoffeeStatus.failure,
+              image: startImage,
+              messageId: 'fetchRandomImageFailureMessage',
+            ),
           ],
         );
       });
@@ -182,6 +189,7 @@ void main() {
           const CoffeeState(
             status: CoffeeStatus.failure,
             image: startRemoteImage,
+            messageId: 'saveImageFailureMessage',
           ),
         ],
       );
