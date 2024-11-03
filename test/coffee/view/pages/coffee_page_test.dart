@@ -168,8 +168,7 @@ void main() {
 
     testWidgets(
         'renders enabled bottom buttons and a snackbar when '
-        'status is failure with saveImageFailureMessage',
-        (tester) async {
+        'status is failure with saveImageFailureMessage', (tester) async {
       whenListen(
         coffeeCubit,
         Stream.fromIterable([
