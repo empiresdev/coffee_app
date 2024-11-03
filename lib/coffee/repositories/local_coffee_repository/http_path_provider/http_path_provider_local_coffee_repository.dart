@@ -46,19 +46,15 @@ class HttpPathProviderLocalCoffeeRepository implements LocalCoffeeRepository {
     if (!imageFileExtensions.contains(fileMetadata['extension'])) {
       throw InvalidRemoteCoffeeImageException();
     }
-    try {
-      final imagesDir = await getImagesDirectory();
-      final fileName = '$_filenameIdentifier'
-          '${DateTime.now().millisecondsSinceEpoch}'
-          '_'
-          '${fileMetadata['name']}';
+    final imagesDir = await getImagesDirectory();
+    final fileName = '$_filenameIdentifier'
+        '${DateTime.now().millisecondsSinceEpoch}'
+        '_'
+        '${fileMetadata['name']}';
 
-      final file = File(path.join(imagesDir.path, fileName));
-      await file.writeAsBytes(response.bodyBytes);
-      return _list..add(LocalCoffeeImage(file.path));
-    } catch (_) {
-      throw LocalSavingException();
-    }
+    final file = File(path.join(imagesDir.path, fileName));
+    await file.writeAsBytes(response.bodyBytes);
+    return _list..add(LocalCoffeeImage(file.path));
   }
 
   @override
