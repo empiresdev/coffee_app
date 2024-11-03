@@ -21,7 +21,6 @@ class MockPathProviderPlatform extends PathProviderPlatform {
 }
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
   late Directory tempDir;
 
   setUp(() async {
@@ -85,6 +84,40 @@ void main() {
 
       expect(favorites, throwsA(InvalidRemoteCoffeeImageException()));
     });
+  });
+
+  test(
+      'throws a InvalidRemoteCoffeeImageException when '
+      'url does not have any file extension', () async {
+    const remoteCoffeeImage = RemoteCoffeeImage('https://test.com/test');
+    final mockImageBytes = List<int>.generate(1024, (index) => index % 256);
+    final mockClient = generateHttpMockClient(
+      statusCode: 200,
+      bytes: mockImageBytes,
+      body: '',
+    );
+
+    final sut = HttpPathProviderLocalCoffeeRepository(mockClient);
+    final favorites = sut.addImage(remoteCoffeeImage);
+
+    expect(favorites, throwsA(InvalidRemoteCoffeeImageException()));
+  });
+
+  test(
+      'throws a InvalidRemoteCoffeeImageException when '
+      'file extension is not an image', () async {
+    const remoteCoffeeImage = RemoteCoffeeImage('https://test.com/test.pdf');
+    final mockImageBytes = List<int>.generate(1024, (index) => index % 256);
+    final mockClient = generateHttpMockClient(
+      statusCode: 200,
+      bytes: mockImageBytes,
+      body: '',
+    );
+
+    final sut = HttpPathProviderLocalCoffeeRepository(mockClient);
+    final favorites = sut.addImage(remoteCoffeeImage);
+
+    expect(favorites, throwsA(InvalidRemoteCoffeeImageException()));
   });
 
   group('fetchAllFavorites', () {
