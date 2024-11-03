@@ -321,5 +321,35 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(FavoritesPage), findsOneWidget);
     });
+
+    testWidgets(
+        'ensures loadFavoriteImage is called when '
+        'FavoritesPage returns a valid local image', (tester) async {
+      const favorites = [LocalCoffeeImage('any')];
+      when(() => coffeeCubit.state).thenReturn(
+        const CoffeeState(
+          status: CoffeeStatus.success,
+          favorites: favorites,
+        ),
+      );
+      when(() => coffeeCubit.loadFavoriteImage(favorites[0]))
+          .thenAnswer((_) async {});
+
+      await tester.pumpApp(
+        BlocProvider.value(
+          value: coffeeCubit,
+          child: sut,
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('SeeFavoritesButton')));
+      await tester.pumpAndSettle();
+      expect(find.byType(FavoritesPage), findsOneWidget);
+
+      final anyImage = find.byType(Image).first;
+      await tester.tap(anyImage);
+      await tester.pumpAndSettle();
+      verify(() => coffeeCubit.loadFavoriteImage(favorites[0])).called(1);
+    });
   });
 }
