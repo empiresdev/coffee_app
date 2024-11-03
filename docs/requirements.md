@@ -16,3 +16,7 @@ As a user, I want to see all my favorite images so that I can easily see my save
 
 ### 5. View an specific favorite image
 As a user, I want to open and maximize a favorite image so that I can see it in details again even when my device is offline.
+
+### 6. Remove the current image from favorites
+As a user, I want to open and maximize a favorite image so that I can see it in details again even when my device is offline.
+As a user, I want to remove a coffee image from my favorites so that I can keep my favorites list relevant to my current preferences.
