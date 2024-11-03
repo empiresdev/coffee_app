@@ -16,5 +16,20 @@
     "@favoritesAppBarTitle": {
         "description": "Texto exibido no AppBar do Favorites Page"
     },
-    "favoritesEmptyErrorMessage": "Não há imagens favoritas para exibir."
+    "favoritesEmptyErrorMessage": "Não há imagens favoritas para exibir.",
+    "@favoritesEmptyErrorMessage": {
+        "description": "Texto exibido na página de Favoritos quando a lista é vazia"
+    },
+    "fetchRandomImageFailureMessage": "Não foi possível carregar a imagem de café. Ocorreu um erro no servidor, tente novamente mais tarde.",
+    "@fetchRandomImageFailureMessage": {
+        "description": "Texto exibido se fetchRandomImage retornar uma falha"
+    },
+    "saveImageFailureMessage": "Não foi possível salvar a imagem. Por favor tente novamente mais tarde.",
+    "@saveImageFailureMessage": {
+        "description": "Texto exibido se saveCoffeeImage retornar uma falha"
+    },
+    "loadFavoriteImageFailureMessage": "Não foi possível abrir a imagem favorita. Por favor tente novamente mais tarde.",
+    "@loadFavoriteImageFailureMessage":{
+        "description": "Texto exibido se loadFavoriteCoffeeImage retornar uma falha"
+    }
 }

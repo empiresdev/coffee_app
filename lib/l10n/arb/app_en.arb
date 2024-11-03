@@ -19,5 +19,18 @@
     "favoritesEmptyErrorMessage": "There are no favorite images yet.",
     "@favoritesEmptyErrorMessage": {
         "description": "Text shown in the Favorites Page when favorites list is empty"
+    },
+    "fetchRandomImageFailureMessage": "Unable to load a random image. A server error occurred, please try again later.",
+    "@fetchRandomImageFailureMessage": {
+        "description": "Text shown if fetchRandomImage returns a failure"
+    },
+    "saveImageFailureMessage": "Failed to save the image. Please try again later.",
+    "@saveImageFailureMessage": {
+        "description": "Text shown if saveCoffeeImage returns a failure"
+    },
+    "loadFavoriteImageFailureMessage": "Failed to open your favorite image. Please try again later.",
+    "@loadFavoriteImageFailureMessage":{
+        "description": "Text shown if loadFavoriteCoffeeImage returns a failure"
     }
+
 }
