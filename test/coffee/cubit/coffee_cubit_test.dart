@@ -5,29 +5,23 @@ import 'package:coffee_app/coffee/repositories/repositories.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockRemoteCoffeeRepository extends Mock
-    implements RemoteCoffeeRepository {}
-
-class MockLocalCoffeeRepository extends Mock implements LocalCoffeeRepository {}
+class MockCoffeeRepository extends Mock implements CoffeeRepository {}
 
 void main() {
   group('CoffeeCubit', () {
     late CoffeeCubit sut;
-    late RemoteCoffeeRepository remoteRepository;
-    late LocalCoffeeRepository localRepository;
+    late MockCoffeeRepository mockCoffeeRepository;
     const remoteCoffeeImage = RemoteCoffeeImage(
       'https://coffee.alexflipnote.dev/l-CRpPjbniY_coffee.jpg',
     );
 
     setUp(() {
-      remoteRepository = MockRemoteCoffeeRepository();
-      localRepository = MockLocalCoffeeRepository();
-      when(() => remoteRepository.fetchRandomImage()).thenAnswer(
+      mockCoffeeRepository = MockCoffeeRepository();
+      when(() => mockCoffeeRepository.fetchRandomImage()).thenAnswer(
         (_) async => remoteCoffeeImage,
       );
       sut = CoffeeCubit(
-        remoteRepository: remoteRepository,
-        localRepository: localRepository,
+        repository: mockCoffeeRepository,
       );
     });
     test('initial state is correct', () {
@@ -54,7 +48,7 @@ void main() {
         blocTest<CoffeeCubit, CoffeeState>(
           'emits [loading, failure] when first fetchRemoteImage throws',
           setUp: () {
-            when(() => remoteRepository.fetchRandomImage())
+            when(() => mockCoffeeRepository.fetchRandomImage())
                 .thenThrow(Exception('error'));
           },
           build: () => sut,
@@ -102,7 +96,7 @@ void main() {
             startImage = const RemoteCoffeeImage(
               'https://coffee.alexflipnote.dev/Bk9YHzyGMwo_coffee.jpg',
             );
-            when(() => remoteRepository.fetchRandomImage())
+            when(() => mockCoffeeRepository.fetchRandomImage())
                 .thenThrow(Exception('error'));
           },
           build: () => sut,
@@ -143,7 +137,7 @@ void main() {
         'saveFavoriteImage returns success',
         setUp: () {
           when(
-            () => localRepository.addImage(startRemoteImage),
+            () => mockCoffeeRepository.addImage(startRemoteImage),
           ).thenAnswer(
             (_) async => [startLocalImage],
           );
@@ -172,7 +166,7 @@ void main() {
         'saveFavoriteImage throws',
         setUp: () {
           when(
-            () => localRepository.addImage(startRemoteImage),
+            () => mockCoffeeRepository.addImage(startRemoteImage),
           ).thenThrow(Exception('an error'));
         },
         build: () => sut,
@@ -207,7 +201,7 @@ void main() {
         'state is initial',
         setUp: () {
           initialState = const CoffeeState(status: CoffeeStatus.initial);
-          when(() => localRepository.fetchAllFavorites())
+          when(() => mockCoffeeRepository.fetchAllFavorites())
               .thenAnswer((_) async => favorites);
         },
         build: () => sut,
@@ -227,7 +221,7 @@ void main() {
             image: remoteCoffeeImage,
             favorites: [],
           );
-          when(() => localRepository.fetchAllFavorites())
+          when(() => mockCoffeeRepository.fetchAllFavorites())
               .thenAnswer((_) async => favorites);
         },
         build: () => sut,
@@ -246,7 +240,7 @@ void main() {
         'emits empty favorite list when '
         'localRepository throws',
         setUp: () {
-          when(() => localRepository.fetchAllFavorites())
+          when(() => mockCoffeeRepository.fetchAllFavorites())
               .thenThrow(Exception('error'));
         },
         build: () => sut,
@@ -341,17 +335,17 @@ void main() {
     group('init', () {
       test('calls fetchRemoteImage and loadAllFavorites when init is called',
           () async {
-        when(() => remoteRepository.fetchRandomImage()).thenAnswer(
+        when(() => mockCoffeeRepository.fetchRandomImage()).thenAnswer(
           (_) async => const RemoteCoffeeImage(''),
         );
-        when(() => localRepository.fetchAllFavorites()).thenAnswer(
+        when(() => mockCoffeeRepository.fetchAllFavorites()).thenAnswer(
           (_) async => <LocalCoffeeImage>[],
         );
 
         await sut.init();
 
-        verify(() => remoteRepository.fetchRandomImage()).called(1);
-        verify(() => localRepository.fetchAllFavorites()).called(1);
+        verify(() => mockCoffeeRepository.fetchRandomImage()).called(1);
+        verify(() => mockCoffeeRepository.fetchAllFavorites()).called(1);
       });
     });
   });

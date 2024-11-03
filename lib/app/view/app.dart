@@ -6,23 +6,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class App extends StatefulWidget {
   App({
-    this.localRepository,
-    this.remoteRepository,
+    this.coffeeRepository,
     CoffeeCubit? coffeeCubit,
     super.key,
   })  : assert(
-          (coffeeCubit != null) ||
-              (localRepository != null && remoteRepository != null),
-          'Repositories are required if CoffeeCubit is null.',
+          (coffeeCubit != null) || (coffeeRepository != null),
+          'Repository is required if CoffeeCubit is null.',
         ),
         _coffeeCubit = coffeeCubit ??
             CoffeeCubit(
-              localRepository: localRepository!,
-              remoteRepository: remoteRepository!,
+              repository: coffeeRepository!,
             );
 
-  final LocalCoffeeRepository? localRepository;
-  final RemoteCoffeeRepository? remoteRepository;
+  final CoffeeRepository? coffeeRepository;
   final CoffeeCubit? _coffeeCubit;
 
   CoffeeCubit get cubit => _coffeeCubit!;
