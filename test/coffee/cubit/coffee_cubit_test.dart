@@ -154,7 +154,7 @@ void main() {
           ),
           const CoffeeState(
             status: CoffeeStatus.success,
-            image: startRemoteImage,
+            image: startLocalImage,
             favorites: [startLocalImage],
           ),
         ],
