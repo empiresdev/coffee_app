@@ -15,5 +15,6 @@
     "favoritesAppBarTitle": "Meus favoritos",
     "@favoritesAppBarTitle": {
         "description": "Texto exibido no AppBar do Favorites Page"
-    }
+    },
+    "favoritesEmptyErrorMessage": "Não há imagens favoritas para exibir."
 }

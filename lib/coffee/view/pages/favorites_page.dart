@@ -11,6 +11,7 @@ class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.favoritesAppBarTitle),
@@ -21,6 +22,11 @@ class FavoritesPage extends StatelessWidget {
             : null,
         builder: (context, state) {
           final favorites = state.favorites ?? [];
+          if (favorites.isEmpty) {
+            return Center(
+              child: Text(l10n.favoritesEmptyErrorMessage),
+            );
+          }
           return GridView.count(
             padding: const EdgeInsets.all(8),
             crossAxisCount: 4,
