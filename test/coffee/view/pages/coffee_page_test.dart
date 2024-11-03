@@ -99,16 +99,21 @@ void main() {
 
     testWidgets(
         'renders enabled bottom buttons and a snackbar when '
-        'status is failure', (tester) async {
+        'status is failure with fetchRandomImageFailureMessage',
+        (tester) async {
       whenListen(
         coffeeCubit,
         Stream.fromIterable([
           const CoffeeState(status: CoffeeStatus.initial),
-          const CoffeeState(status: CoffeeStatus.failure),
+          const CoffeeState(
+            status: CoffeeStatus.failure,
+            messageId: 'fetchRandomImageFailureMessage',
+          ),
         ]),
       );
 
       await tester.pumpApp(
+        locale: const Locale('en'),
         BlocProvider.value(
           value: coffeeCubit,
           child: sut,
@@ -118,6 +123,81 @@ void main() {
       expect(find.byType(SnackBar), findsNothing);
       await tester.pump();
       expect(find.byType(SnackBar), findsOneWidget);
+      expect(
+        find.text(
+          'Unable to load a random image. '
+          'A server error occurred, please try again later.',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets(
+        'renders enabled bottom buttons and a snackbar when '
+        'status is failure with loadFavoriteImageFailureMessage',
+        (tester) async {
+      whenListen(
+        coffeeCubit,
+        Stream.fromIterable([
+          const CoffeeState(status: CoffeeStatus.initial),
+          const CoffeeState(
+            status: CoffeeStatus.failure,
+            messageId: 'loadFavoriteImageFailureMessage',
+          ),
+        ]),
+      );
+
+      await tester.pumpApp(
+        locale: const Locale('en'),
+        BlocProvider.value(
+          value: coffeeCubit,
+          child: sut,
+        ),
+      );
+
+      expect(find.byType(SnackBar), findsNothing);
+      await tester.pump();
+      expect(find.byType(SnackBar), findsOneWidget);
+      expect(
+        find.text(
+          'Failed to open your favorite image. Please try again later.',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets(
+        'renders enabled bottom buttons and a snackbar when '
+        'status is failure with saveImageFailureMessage',
+        (tester) async {
+      whenListen(
+        coffeeCubit,
+        Stream.fromIterable([
+          const CoffeeState(status: CoffeeStatus.initial),
+          const CoffeeState(
+            status: CoffeeStatus.failure,
+            messageId: 'saveImageFailureMessage',
+          ),
+        ]),
+      );
+
+      await tester.pumpApp(
+        locale: const Locale('en'),
+        BlocProvider.value(
+          value: coffeeCubit,
+          child: sut,
+        ),
+      );
+
+      expect(find.byType(SnackBar), findsNothing);
+      await tester.pump();
+      expect(find.byType(SnackBar), findsOneWidget);
+      expect(
+        find.text(
+          'Failed to save the image. Please try again later.',
+        ),
+        findsOneWidget,
+      );
     });
   });
 
