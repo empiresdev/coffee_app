@@ -23,10 +23,12 @@ void main() {
     testWidgets('renders AppView', (tester) async {
       when(() => mockRemoteCoffeeRepository.fetchRandomImage())
           .thenAnswer((_) async => const RemoteCoffeeImage('any url'));
-      await tester.pumpWidget(App(
-        localRepository: mockLocalCoffeeRepository,
-        remoteRepository: mockRemoteCoffeeRepository,
-      ));
+      await tester.pumpWidget(
+        App(
+          localRepository: mockLocalCoffeeRepository,
+          remoteRepository: mockRemoteCoffeeRepository,
+        ),
+      );
       expect(find.byType(AppView), findsOneWidget);
     });
 
@@ -34,10 +36,12 @@ void main() {
         (tester) async {
       when(() => mockRemoteCoffeeRepository.fetchRandomImage())
           .thenAnswer((_) async => const RemoteCoffeeImage('any url'));
-      await tester.pumpWidget(App(
-        localRepository: mockLocalCoffeeRepository,
-        remoteRepository: mockRemoteCoffeeRepository,
-      ));
+      await tester.pumpWidget(
+        App(
+          localRepository: mockLocalCoffeeRepository,
+          remoteRepository: mockRemoteCoffeeRepository,
+        ),
+      );
       expect(find.byType(AppView), findsOneWidget);
     });
   });

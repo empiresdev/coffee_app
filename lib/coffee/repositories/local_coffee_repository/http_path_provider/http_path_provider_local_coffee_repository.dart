@@ -65,7 +65,8 @@ class HttpPathProviderLocalCoffeeRepository implements LocalCoffeeRepository {
   Future<List<LocalCoffeeImage>> fetchAllFavorites() async {
     final imagesDir = await getImagesDirectory();
     final files = imagesDir.listSync().whereType<File>().where(
-        (file) => imageFileExtensions.contains(path.extension(file.path)));
+          (file) => imageFileExtensions.contains(path.extension(file.path)),
+        );
     final localCoffeeImages =
         files.map((file) => LocalCoffeeImage(file.path)).toList();
     return _list = localCoffeeImages;
