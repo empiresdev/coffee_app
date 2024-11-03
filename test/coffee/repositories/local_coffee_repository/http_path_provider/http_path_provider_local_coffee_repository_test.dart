@@ -67,14 +67,12 @@ void main() {
       final sut = HttpPathProviderLocalCoffeeRepository(mockClient);
       final favorites = sut.addImage(remoteCoffeeImage);
 
-      // Assert: Check if the image was saved correctly
       expect(favorites, throwsA(RemoteServerException()));
     });
 
     test('throws a InvalidRemoteCoffeeImageException when the url is invalid',
         () async {
-      const remoteCoffeeImage =
-          RemoteCoffeeImage(r'htt:\example..cominvalid|page');
+      const remoteCoffeeImage = RemoteCoffeeImage('::Not valid URI::');
       final mockImageBytes = List<int>.generate(1024, (index) => index % 256);
       final mockClient = generateHttpMockClient(
         statusCode: 200,
@@ -85,7 +83,6 @@ void main() {
       final sut = HttpPathProviderLocalCoffeeRepository(mockClient);
       final favorites = sut.addImage(remoteCoffeeImage);
 
-      // Assert: Check if the image was saved correctly
       expect(favorites, throwsA(InvalidRemoteCoffeeImageException()));
     });
   });
