@@ -16,13 +16,17 @@ class CoffeeCubit extends Cubit<CoffeeState> {
   final RemoteCoffeeRepository remoteRepository;
   final LocalCoffeeRepository localRepository;
 
+  Future<void> init() async {
+    await Future.wait([fetchRemoteImage(), loadAllFavoriteImages()]);
+  }
+
   Future<void> fetchRemoteImage() async {
-    emit(CoffeeState(status: CoffeeStatus.loading, image: state.image));
+    emit(state.copyWith(status: CoffeeStatus.loading, image: state.image));
     try {
       final coffeeImage = await remoteRepository.fetchRandomImage();
-      emit(CoffeeState(status: CoffeeStatus.success, image: coffeeImage));
+      emit(state.copyWith(status: CoffeeStatus.success, image: coffeeImage));
     } on Exception {
-      emit(CoffeeState(status: CoffeeStatus.failure, image: state.image));
+      emit(state.copyWith(status: CoffeeStatus.failure, image: state.image));
     }
   }
 
@@ -31,18 +35,18 @@ class CoffeeCubit extends Cubit<CoffeeState> {
       return;
     }
     final currentImage = state.image! as RemoteCoffeeImage;
-    emit(CoffeeState(status: CoffeeStatus.loading, image: currentImage));
+    emit(state.copyWith(status: CoffeeStatus.loading, image: currentImage));
     try {
       final favorites = await localRepository.addImage(currentImage);
       emit(
-        CoffeeState(
+        state.copyWith(
           status: CoffeeStatus.success,
           image: favorites.last,
           favorites: favorites,
         ),
       );
     } on Exception {
-      emit(CoffeeState(status: CoffeeStatus.failure, image: currentImage));
+      emit(state.copyWith(status: CoffeeStatus.failure, image: currentImage));
     }
   }
 

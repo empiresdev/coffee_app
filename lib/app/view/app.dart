@@ -20,7 +20,7 @@ class App extends StatelessWidget {
       create: (context) => CoffeeCubit(
         localRepository: localRepository,
         remoteRepository: remoteRepository,
-      ),
+      )..init(),
       child: const AppView(),
     );
   }

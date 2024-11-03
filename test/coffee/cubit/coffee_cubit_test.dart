@@ -329,5 +329,22 @@ void main() {
         ],
       );
     });
+
+    group('init', () {
+      test('calls fetchRemoteImage and loadAllFavorites when init is called',
+          () async {
+        when(() => remoteRepository.fetchRandomImage()).thenAnswer(
+          (_) async => const RemoteCoffeeImage(''),
+        );
+        when(() => localRepository.fetchAllFavorites()).thenAnswer(
+          (_) async => <LocalCoffeeImage>[],
+        );
+
+        await sut.init();
+
+        verify(() => remoteRepository.fetchRandomImage()).called(1);
+        verify(() => localRepository.fetchAllFavorites()).called(1);
+      });
+    });
   });
 }
