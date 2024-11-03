@@ -1,7 +1,9 @@
 {
     "@@locale": "en",
-    "counterAppBarTitle": "Counter",
-    "@counterAppBarTitle": {
-        "description": "Text shown in the AppBar of the Counter Page"
-    }
+    "appBarTitle": "Coffee App",
+    "@appBarTitle": {
+        "description": "Text shown in the AppBar of the Coffee Page"
+    },
+    "errorMessage": "An error occurred",
+    "nextButtonTitle": "Next"
 }

@@ -30,4 +30,11 @@ final class CoffeeState extends Equatable {
         message: message ?? this.message,
         favorites: favorites ?? this.favorites,
       );
+
+  bool get isLoading => status == CoffeeStatus.loading;
+
+  bool get isFavorite {
+    if (image == null || favorites == null) return false;
+    return favorites?.contains(image) ?? false;
+  }
 }
