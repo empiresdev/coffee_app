@@ -83,7 +83,7 @@ class CoffeePage extends StatelessWidget {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.all(16),
                 child: BlocBuilder<CoffeeCubit, CoffeeState>(
                   builder: (context, state) {
                     return Row(
