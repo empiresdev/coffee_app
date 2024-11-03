@@ -1,6 +1,6 @@
 # 3. Save the current image locally
 ## 3.1. Happy path
-- Given the user is viewing a coffee image that is not marked as favorited
+- Given the user is viewing a coffee image that is not marked as favorite
 - When the user requests to save the current coffee image
 - Then the image should be saved locally and the favorite icon should become enabled
 
