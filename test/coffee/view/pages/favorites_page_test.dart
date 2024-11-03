@@ -137,5 +137,4 @@ void main() {
 
     expect(localImage, isNull);
   });
-  
 }
