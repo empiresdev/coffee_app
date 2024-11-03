@@ -1,32 +1,27 @@
+import 'package:bloc_test/bloc_test.dart';
 import 'package:coffee_app/app/app.dart';
 import 'package:coffee_app/app/view/app_view.dart';
-import 'package:coffee_app/coffee/models/coffee_image.dart';
-import 'package:coffee_app/coffee/repositories/repositories.dart';
+import 'package:coffee_app/coffee/cubit/coffee_cubit.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockLocalCoffeeRepository extends Mock implements LocalCoffeeRepository {}
-
-class MockRemoteCoffeeRepository extends Mock
-    implements RemoteCoffeeRepository {}
+class MockCoffeeCubit extends MockCubit<CoffeeState> implements CoffeeCubit {}
 
 void main() {
   group('App', () {
-    late MockLocalCoffeeRepository mockLocalCoffeeRepository;
-    late MockRemoteCoffeeRepository mockRemoteCoffeeRepository;
+    late MockCoffeeCubit mockCoffeeCubit;
 
     setUp(() {
-      mockLocalCoffeeRepository = MockLocalCoffeeRepository();
-      mockRemoteCoffeeRepository = MockRemoteCoffeeRepository();
+      mockCoffeeCubit = MockCoffeeCubit();
+      when(() => mockCoffeeCubit.state)
+          .thenReturn(const CoffeeState(status: CoffeeStatus.initial));
     });
 
     testWidgets('renders AppView', (tester) async {
-      when(() => mockRemoteCoffeeRepository.fetchRandomImage())
-          .thenAnswer((_) async => const RemoteCoffeeImage('any url'));
+      when(() => mockCoffeeCubit.init()).thenAnswer((_) async {});
       await tester.pumpWidget(
         App(
-          localRepository: mockLocalCoffeeRepository,
-          remoteRepository: mockRemoteCoffeeRepository,
+          coffeeCubit: mockCoffeeCubit,
         ),
       );
       expect(find.byType(AppView), findsOneWidget);
@@ -34,15 +29,13 @@ void main() {
 
     testWidgets('ensure CoffeeCubit calls fetchRandomImage when the app starts',
         (tester) async {
-      when(() => mockRemoteCoffeeRepository.fetchRandomImage())
-          .thenAnswer((_) async => const RemoteCoffeeImage('any url'));
+      when(() => mockCoffeeCubit.init()).thenAnswer((_) async {});
       await tester.pumpWidget(
         App(
-          localRepository: mockLocalCoffeeRepository,
-          remoteRepository: mockRemoteCoffeeRepository,
+          coffeeCubit: mockCoffeeCubit,
         ),
       );
-      expect(find.byType(AppView), findsOneWidget);
+      verify(() => mockCoffeeCubit.init()).called(1);
     });
   });
 }
