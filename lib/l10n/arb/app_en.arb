@@ -5,5 +5,15 @@
         "description": "Text shown in the AppBar of the Coffee Page"
     },
     "errorMessage": "An error occurred",
-    "nextButtonTitle": "Next"
+    "@errorMessage": {
+        "description": "Text shown as a default error message of the Coffee Page"
+    },
+    "nextButtonTitle": "Next",
+    "@nextButtonTitle": {
+        "description": "Text shown in the next button of the Coffee Page"
+    },
+    "favoritesAppBarTitle": "Favorites",
+    "@favoritesAppBarTitle": {
+        "description": "Text shown in the AppBar of the Favorites Page"
+    }
 }
