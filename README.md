@@ -142,18 +142,6 @@ Update the `CFBundleLocalizations` array in the `Info.plist` at `ios/Runner/Info
 }
 ```
 
-`app_pt.arb`
-
-```arb
-{
-    "@@locale": "pt",
-    "appBarTitle": "Café App",
-    "@appBarTitle": {
-        "description": "Texto exibido no AppBar do Coffee Page"
-    },
-}
-```
-
 ### Generating Translations
 
 To use the latest translations changes, you will need to generate them:
