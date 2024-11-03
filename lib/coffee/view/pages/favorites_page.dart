@@ -16,10 +16,7 @@ class FavoritesPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(l10n.favoritesAppBarTitle),
       ),
-      body: BlocConsumer<CoffeeCubit, CoffeeState>(
-        listener: (context, state) => state.favorites == null
-            ? context.read<CoffeeCubit>().loadAllFavoriteImages()
-            : null,
+      body: BlocBuilder<CoffeeCubit, CoffeeState>(
         builder: (context, state) {
           final favorites = state.favorites ?? [];
           if (favorites.isEmpty) {
@@ -27,24 +24,26 @@ class FavoritesPage extends StatelessWidget {
               child: Text(l10n.favoritesEmptyErrorMessage),
             );
           }
-          return GridView.count(
-            padding: const EdgeInsets.all(8),
-            crossAxisCount: 4,
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
-            children: favorites
-                .map(
-                  (image) => GestureDetector(
-                    onTap: () => Navigator.of(context).pop(image),
-                    child: Card(
-                      child: Image.file(
-                        File(image.imageUrl),
-                        fit: BoxFit.cover,
+          return SafeArea(
+            child: GridView.count(
+              padding: const EdgeInsets.all(8),
+              crossAxisCount: 4,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              children: favorites
+                  .map(
+                    (image) => GestureDetector(
+                      onTap: () => Navigator.of(context).pop(image),
+                      child: Card(
+                        child: Image.file(
+                          File(image.imageUrl),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  ),
-                )
-                .toList(),
+                  )
+                  .toList(),
+            ),
           );
         },
       ),
