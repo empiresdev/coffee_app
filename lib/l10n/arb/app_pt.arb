@@ -1,0 +1,19 @@
+{
+    "@@locale": "pt",
+    "appBarTitle": "Café App",
+    "@appBarTitle": {
+        "description": "Texto exibido no AppBar do Coffee Page"
+    },
+    "errorMessage": "Ocorreu um erro",
+    "@errorMessage": {
+        "description": "Texto exibido como uma mensagem padrão do Coffee Page"
+    },
+    "nextButtonTitle": "Próximo",
+    "@nextButtonTitle": {
+        "description": "Texto exibido no botão Próximo do Coffee Page"
+    },
+    "favoritesAppBarTitle": "Meus favoritos",
+    "@favoritesAppBarTitle": {
+        "description": "Texto exibido no AppBar do Favorites Page"
+    }
+}
