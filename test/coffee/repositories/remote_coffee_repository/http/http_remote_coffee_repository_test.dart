@@ -7,11 +7,14 @@ import '../../helpers/helpers.dart';
 void main() {
   group('fetchRandomImage', () {
     test('returns a valid RemoteCoffeeImage', () async {
-      final client = generateHttpMockClient(200, '''
+      final client = generateHttpMockClient(
+        statusCode: 200,
+        body: '''
 {
   "file": "https://coffee.alexflipnote.dev/2GiUIZKXR1s_coffee.jpg"
 }
-''');
+''',
+      );
       final sut = HttpRemoteCoffeeRepository(client);
 
       final result = await sut.fetchRandomImage();
@@ -24,7 +27,7 @@ void main() {
     test(
         'throws a RemoteServerException when response code '
         'is different from 200', () async {
-      final client = generateHttpMockClient(500, '');
+      final client = generateHttpMockClient(statusCode: 500, body: '');
 
       final sut = HttpRemoteCoffeeRepository(client);
 
@@ -35,7 +38,8 @@ void main() {
     test(
         'throws a InvalidRemoteCoffeeImageException when '
         'response data is invalid', () async {
-      final client = generateHttpMockClient(200, 'invalid data');
+      final client =
+          generateHttpMockClient(statusCode: 200, body: 'invalid data');
 
       final sut = HttpRemoteCoffeeRepository(client);
 

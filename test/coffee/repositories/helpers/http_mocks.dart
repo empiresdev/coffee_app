@@ -1,13 +1,14 @@
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
 
-MockClient generateHttpMockClient(int statusCode, String body) {
+MockClient generateHttpMockClient({
+  required int statusCode,
+  required String body,
+  List<int>? bytes,
+}) {
   return MockClient((request) async {
-    const body = '''
-{
-  "file": "https://coffee.alexflipnote.dev/2GiUIZKXR1s_coffee.jpg"
-}
-''';
-    return Response(body, statusCode);
+    return bytes != null
+        ? Response.bytes(bytes, statusCode)
+        : Response(body, statusCode);
   });
 }
