@@ -24,25 +24,8 @@ final class HttpFileCoffeeRepository implements CoffeeRepository {
   @override
   Future<List<LocalCoffeeImage>> addImage(CoffeeImage remoteImage) async {
     final imageUrl = remoteImage.imageUrl;
-    final uri = Uri.tryParse(imageUrl);
-    if (uri == null) {
-      throw InvalidRemoteCoffeeImageException();
-    }
-    final response = await _client.get(uri);
-    if (response.statusCode != 200) {
-      throw RemoteServerException();
-    }
-    final fileMetadata = _extractFileNameAndExtension(imageUrl);
-    if (!imageFileExtensions.contains(fileMetadata['extension'])) {
-      throw InvalidRemoteCoffeeImageException();
-    }
-    final imagesDir = await getImagesDirectory();
-    final fileName = '$_filenameIdentifier'
-        '${DateTime.now().millisecondsSinceEpoch}'
-        '_'
-        '${fileMetadata['name']}';
-
-    final file = File(path.join(imagesDir.path, fileName));
+    final response = await _fetchUrl(imageUrl);
+    final file = await _createFileFromUrl(imageUrl);
     await file.writeAsBytes(response.bodyBytes);
     return _list..add(LocalCoffeeImage(file.path));
   }
@@ -60,11 +43,7 @@ final class HttpFileCoffeeRepository implements CoffeeRepository {
 
   @override
   Future<CoffeeImage> fetchRandomImage() async {
-    final uri = Uri.parse(apiUrl);
-    final response = await _client.get(uri);
-    if (response.statusCode != 200) {
-      throw RemoteServerException();
-    }
+    final response = await _fetchUrl(apiUrl);
     try {
       final json = jsonDecode(response.body) as Map<String, dynamic>;
       return ApiCoffeeImageModel.fromJson(json).toEntity();
@@ -73,13 +52,44 @@ final class HttpFileCoffeeRepository implements CoffeeRepository {
     }
   }
 
-  Future<Directory> getImagesDirectory() async {
+  Future<Directory> getImagesDirectory({bool isTemp = false}) async {
     final directory = await getApplicationDocumentsDirectory();
-    final imagesDir = Directory(path.join(directory.path, 'favorites'));
+    final imagesDir =
+        Directory(path.join(directory.path, isTemp ? 'temp' : 'favorites'));
     if (!imagesDir.existsSync()) {
       return imagesDir.create(recursive: true);
     }
     return imagesDir;
+  }
+
+  Future<File> _createFileFromUrl(
+    String imageUrl, {
+    bool isTemp = false,
+  }) async {
+    final fileMetadata = _extractFileNameAndExtension(imageUrl);
+    if (!imageFileExtensions.contains(fileMetadata['extension'])) {
+      throw InvalidRemoteCoffeeImageException();
+    }
+    final imagesDir = await getImagesDirectory(isTemp: isTemp);
+    final fileName = '$_filenameIdentifier'
+        '${DateTime.now().millisecondsSinceEpoch}'
+        '_'
+        '${fileMetadata['name']}';
+
+    final file = File(path.join(imagesDir.path, fileName));
+    return file;
+  }
+
+  Future<http.Response> _fetchUrl(String imageUrl) async {
+    final uri = Uri.tryParse(imageUrl);
+    if (uri == null) {
+      throw InvalidRemoteCoffeeImageException();
+    }
+    final response = await _client.get(uri);
+    if (response.statusCode != 200) {
+      throw RemoteServerException();
+    }
+    return response;
   }
 
   Map<String, String> _extractFileNameAndExtension(String url) {
