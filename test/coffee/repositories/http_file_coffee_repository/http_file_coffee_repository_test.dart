@@ -2,21 +2,30 @@ import 'dart:io';
 
 import 'package:coffee_app/coffee/exceptions/exceptions.dart';
 import 'package:coffee_app/coffee/models/models.dart';
-import 'package:coffee_app/coffee/repositories/local_coffee_repository/http_path_provider/http_path_provider.dart';
+import 'package:coffee_app/coffee/repositories/http_file_coffee_repository/http_file_coffee_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 
-import '../../helpers/http_mocks.dart';
+import '../helpers/helpers.dart';
 
 class MockPathProviderPlatform extends PathProviderPlatform {
-  MockPathProviderPlatform(this.tempDir);
+  MockPathProviderPlatform({
+    required this.applicationDocuments,
+    required this.temporary,
+  });
 
-  final Directory tempDir;
+  final Directory temporary;
+  final Directory applicationDocuments;
 
   @override
   Future<String> getApplicationDocumentsPath() async {
-    return tempDir.path;
+    return applicationDocuments.path;
+  }
+
+  @override
+  Future<String> getTemporaryPath() async {
+    return temporary.path;
   }
 }
 
@@ -25,11 +34,57 @@ void main() {
 
   setUp(() async {
     tempDir = await Directory.systemTemp.createTemp();
-    PathProviderPlatform.instance = MockPathProviderPlatform(tempDir);
+    PathProviderPlatform.instance = MockPathProviderPlatform(
+      temporary: tempDir,
+      applicationDocuments: tempDir,
+    );
   });
 
   tearDown(() async {
     await tempDir.delete(recursive: true);
+  });
+
+  group('fetchRandomImage', () {
+    test('returns a valid RemoteCoffeeImage', () async {
+      final client = generateHttpMockClient(
+        statusCode: 200,
+        body: '''
+{
+  "file": "https://coffee.alexflipnote.dev/2GiUIZKXR1s_coffee.jpg"
+}
+''',
+      );
+      final sut = HttpFileCoffeeRepository(client);
+
+      final result = await sut.fetchRandomImage();
+      expect(
+        result.imageUrl,
+        'https://coffee.alexflipnote.dev/2GiUIZKXR1s_coffee.jpg',
+      );
+    });
+
+    test(
+        'throws a RemoteServerException when response code '
+        'is different from 200', () async {
+      final client = generateHttpMockClient(statusCode: 500, body: '');
+
+      final sut = HttpFileCoffeeRepository(client);
+
+      final result = sut.fetchRandomImage();
+      expect(result, throwsA(RemoteServerException()));
+    });
+
+    test(
+        'throws a InvalidRemoteCoffeeImageException when '
+        'response data is invalid', () async {
+      final client =
+          generateHttpMockClient(statusCode: 200, body: 'invalid data');
+
+      final sut = HttpFileCoffeeRepository(client);
+
+      final result = sut.fetchRandomImage();
+      expect(result, throwsA(InvalidRemoteCoffeeImageException()));
+    });
   });
 
   group('addImage', () {
@@ -43,7 +98,7 @@ void main() {
         body: '',
       );
 
-      final sut = HttpPathProviderLocalCoffeeRepository(mockClient);
+      final sut = HttpFileCoffeeRepository(mockClient);
       final favorites = await sut.addImage(remoteCoffeeImage);
 
       expect(favorites, isNotNull);
@@ -63,7 +118,7 @@ void main() {
         body: '',
       );
 
-      final sut = HttpPathProviderLocalCoffeeRepository(mockClient);
+      final sut = HttpFileCoffeeRepository(mockClient);
       final favorites = sut.addImage(remoteCoffeeImage);
 
       expect(favorites, throwsA(RemoteServerException()));
@@ -79,7 +134,7 @@ void main() {
         body: '',
       );
 
-      final sut = HttpPathProviderLocalCoffeeRepository(mockClient);
+      final sut = HttpFileCoffeeRepository(mockClient);
       final favorites = sut.addImage(remoteCoffeeImage);
 
       expect(favorites, throwsA(InvalidRemoteCoffeeImageException()));
@@ -95,7 +150,7 @@ void main() {
         body: '',
       );
 
-      final sut = HttpPathProviderLocalCoffeeRepository(mockClient);
+      final sut = HttpFileCoffeeRepository(mockClient);
       final favorites = sut.addImage(remoteCoffeeImage);
 
       expect(favorites, throwsA(InvalidRemoteCoffeeImageException()));
@@ -112,7 +167,7 @@ void main() {
         body: '',
       );
 
-      final sut = HttpPathProviderLocalCoffeeRepository(mockClient);
+      final sut = HttpFileCoffeeRepository(mockClient);
       final favorites = sut.addImage(remoteCoffeeImage);
 
       expect(favorites, throwsA(InvalidRemoteCoffeeImageException()));
@@ -121,7 +176,7 @@ void main() {
 
   group('fetchAllFavorites', () {
     test('returns all saved images', () async {
-      final sut = HttpPathProviderLocalCoffeeRepository();
+      final sut = HttpFileCoffeeRepository();
       final imagesDir = await sut.getImagesDirectory();
       final filePaths = [
         path.join(imagesDir.path, 'image_1.png'),

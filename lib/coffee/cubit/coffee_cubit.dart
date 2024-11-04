@@ -6,15 +6,12 @@ import 'package:equatable/equatable.dart';
 part 'coffee_state.dart';
 
 class CoffeeCubit extends Cubit<CoffeeState> {
-  CoffeeCubit({
-    required this.remoteRepository,
-    required this.localRepository,
-  }) : super(
+  CoffeeCubit({required this.repository})
+      : super(
           const CoffeeState(status: CoffeeStatus.initial),
         );
 
-  final RemoteCoffeeRepository remoteRepository;
-  final LocalCoffeeRepository localRepository;
+  final CoffeeRepository repository;
 
   Future<void> init() async {
     await Future.wait([fetchRemoteImage(), loadAllFavoriteImages()]);
@@ -23,7 +20,7 @@ class CoffeeCubit extends Cubit<CoffeeState> {
   Future<void> fetchRemoteImage() async {
     emit(state.copyWith(status: CoffeeStatus.loading, image: state.image));
     try {
-      final coffeeImage = await remoteRepository.fetchRandomImage();
+      final coffeeImage = await repository.fetchRandomImage();
       emit(state.copyWith(status: CoffeeStatus.success, image: coffeeImage));
     } on Exception {
       emit(
@@ -43,7 +40,7 @@ class CoffeeCubit extends Cubit<CoffeeState> {
     final currentImage = state.image! as RemoteCoffeeImage;
     emit(state.copyWith(status: CoffeeStatus.loading, image: currentImage));
     try {
-      final favorites = await localRepository.addImage(currentImage);
+      final favorites = await repository.addImage(currentImage);
       emit(
         state.copyWith(
           status: CoffeeStatus.success,
@@ -64,7 +61,7 @@ class CoffeeCubit extends Cubit<CoffeeState> {
 
   Future<void> loadAllFavoriteImages() async {
     try {
-      final favorites = await localRepository.fetchAllFavorites();
+      final favorites = await repository.fetchAllFavorites();
       emit(state.copyWith(favorites: favorites));
     } on Exception {
       emit(state.copyWith(favorites: []));

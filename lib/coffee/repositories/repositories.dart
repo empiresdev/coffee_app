@@ -1,2 +1,2 @@
-export 'local_coffee_repository.dart';
-export 'remote_coffee_repository.dart';
+export 'coffee_repository.dart';
+export 'http_file_coffee_repository/http_file_coffee_repository.dart';
