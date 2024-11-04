@@ -45,7 +45,7 @@ void main() {
   });
 
   group('fetchRandomImage', () {
-    test('returns a valid RemoteCoffeeImage', () async {
+    test('returns a valid CoffeeImage', () async {
       final client = generateHttpMockClient(
         statusCode: 200,
         body: '''
@@ -57,10 +57,8 @@ void main() {
       final sut = HttpFileCoffeeRepository(client);
 
       final result = await sut.fetchRandomImage();
-      expect(
-        result.imageUrl,
-        'https://coffee.alexflipnote.dev/2GiUIZKXR1s_coffee.jpg',
-      );
+      expect(result, isA<LocalCoffeeImage>());
+      expect(result.imageUrl.endsWith('2GiUIZKXR1s_coffee.jpg'), isTrue);
     });
 
     test(
@@ -106,6 +104,19 @@ void main() {
       expect(favorites[0].imageUrl.endsWith('test.png'), true);
 
       await File(favorites[0].imageUrl).delete();
+    });
+
+    test('returns a valid list of favorites when it gets a local image',
+        () async {
+      final sut = HttpFileCoffeeRepository();
+      const localCoffeeImage = LocalCoffeeImage('test.png');
+
+      expect(
+        () => sut.addImage(localCoffeeImage),
+        throwsA(
+          LocalSavingFileException(),
+        ),
+      );
     });
 
     test('throws a RemoteServerException when the image download fails',

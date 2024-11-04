@@ -8,3 +8,5 @@ abstract class CoffeeException extends Equatable implements Exception {
 class RemoteServerException extends CoffeeException {}
 
 class InvalidRemoteCoffeeImageException extends CoffeeException {}
+
+class LocalSavingFileException extends CoffeeException {}

@@ -22,12 +22,27 @@ final class HttpFileCoffeeRepository implements CoffeeRepository {
   List<LocalCoffeeImage> _list = [];
 
   @override
-  Future<List<LocalCoffeeImage>> addImage(CoffeeImage remoteImage) async {
-    final imageUrl = remoteImage.imageUrl;
-    final response = await _fetchUrl(imageUrl);
-    final file = await _createFileFromUrl(imageUrl);
-    await file.writeAsBytes(response.bodyBytes);
+  Future<List<LocalCoffeeImage>> addImage(CoffeeImage coffeeImage) async {
+    late File file;
+    if (coffeeImage is RemoteCoffeeImage) {
+      final imageUrl = coffeeImage.imageUrl;
+      file = await _downloadAndSaveFile(imageUrl);
+    } else {
+      final tempFile = File(coffeeImage.imageUrl);
+      final newDirectory = await getImagesDirectory();
+      file = await _moveFile(tempFile, newDirectory);
+    }
     return _list..add(LocalCoffeeImage(file.path));
+  }
+
+  Future<File> _downloadAndSaveFile(
+    String imageUrl, {
+    bool isTemp = false,
+  }) async {
+    final response = await _fetchUrl(imageUrl);
+    final file = await _createFileFromUrl(imageUrl, isTemp: isTemp);
+    await file.writeAsBytes(response.bodyBytes);
+    return file;
   }
 
   @override
@@ -44,12 +59,15 @@ final class HttpFileCoffeeRepository implements CoffeeRepository {
   @override
   Future<CoffeeImage> fetchRandomImage() async {
     final response = await _fetchUrl(apiUrl);
+    late RemoteCoffeeImage remoteImage;
     try {
       final json = jsonDecode(response.body) as Map<String, dynamic>;
-      return ApiCoffeeImageModel.fromJson(json).toEntity();
+      remoteImage = ApiCoffeeImageModel.fromJson(json).toEntity();
     } catch (exc) {
       throw InvalidRemoteCoffeeImageException();
     }
+    final file = await _downloadAndSaveFile(remoteImage.imageUrl, isTemp: true);
+    return LocalCoffeeImage(file.path);
   }
 
   Future<Directory> getImagesDirectory({bool isTemp = false}) async {
@@ -94,5 +112,22 @@ final class HttpFileCoffeeRepository implements CoffeeRepository {
 
   Map<String, String> _extractFileNameAndExtension(String url) {
     return {'name': path.basename(url), 'extension': path.extension(url)};
+  }
+
+  Future<File> _moveFile(File sourceFile, Directory newDirectory) async {
+    try {
+      // if (!newDirectory.existsSync()) {
+      //   await newDirectory.create(recursive: true);
+      // }
+
+      final newFilePath = '${newDirectory.path}'
+          '${Platform.pathSeparator}'
+          '${sourceFile.uri.pathSegments.last}';
+
+      final file = await sourceFile.rename(newFilePath);
+      return file;
+    } catch (e) {
+      throw LocalSavingFileException();
+    }
   }
 }

@@ -37,7 +37,7 @@ class CoffeeCubit extends Cubit<CoffeeState> {
     if (state.image == null) {
       return;
     }
-    final currentImage = state.image! as RemoteCoffeeImage;
+    final currentImage = state.image!;
     emit(state.copyWith(status: CoffeeStatus.loading, image: currentImage));
     try {
       final favorites = await repository.addImage(currentImage);
