@@ -67,7 +67,7 @@ The app is divided into several layers and modules, each with a dedicated purpos
 
 The folder structure follows a clean, modular approach. Each main feature is separated by folders that represent the core app, individual features (like `coffee`), and supporting files.
 
-```plaintext
+```
 - app
   - view
     - app.dart
