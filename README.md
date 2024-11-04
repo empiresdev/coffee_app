@@ -13,13 +13,13 @@ An app that lets users save their favorite coffee images for offline viewing, bu
 - [Architecture Overview](#architecture-overview)
 - [Folder Structure](#folder-structure)
 - [Layered Architecture in Detail](#layered-architecture-in-detail)
-  - [Presentation Layer](#presentation-layer-appview-and-coffeeview)
+  - [UI Layer](#ui-layer-appview-and-coffeeview)
   - [Business Logic Layer](#business-logic-layer-coffeecubit)
   - [Data Layer](#data-layer-coffeerepositories-and-coffeemodels)
   - [Core Layer](#core-layer-core)
   - [Localization](#localization-l10n)
-  - [App Initialization](#app-initialization-bootstrapdart-and-main-files)
-- [Design Decisions Justification](#design-decisions-justification)
+  - [App initialization](#app-initialization-bootstrapdart-and-main-files)
+- [Design Decisions](#design-decisions)
 - [Running Tests](#running-tests)
 - [Working with Translations](#working-with-translations)
   - [Adding Strings](#adding-strings)
@@ -58,7 +58,9 @@ _\*Coffee App works on iOS, Android, Web, and Windows._
 
 The app is divided into several layers and modules, each with a dedicated purpose. This architecture separates UI components, business logic, and data management, ensuring that each part of the app is independent and easily testable. The main layers and their purposes are:
 
-- **Presentation Layer (Views)**
+![App Architecture](docs/tech/app_architecture_bloc.png)
+
+- **UI Layer (Views)**
 - **Business Logic Layer (Cubit and State Management)**
 - **Data Layer (Repositories and Models)**
 - **Core Layer (Constants and Utilities)**
@@ -101,7 +103,7 @@ The folder structure follows a clean, modular approach. Each main feature is sep
 
 ### Layered Architecture in Detail
 
-#### Presentation Layer: `app/view` and `coffee/view`
+#### UI Layer: `app/view` and `coffee/view`
 
 The `view` folder under each module (such as `app/view` and `coffee/view`) contains the UI components of the app. This layer includes widgets that are designed to be lightweight and free of business logic, delegating that responsibility to the **Bloc** architecture.
 
@@ -149,13 +151,13 @@ The `l10n` folder contains the localization files from the `Very Good CLI` appro
 
 - `.arb` files (such as `app_en.arb` and `app_pt.arb`) define the strings used in the app for English and Portuguese, following **internationalization (i18n)** standards, coming from `flutter_localizations` package.
 
-### App Initialization: `bootstrap.dart` and Main Files
+### App initialization: `bootstrap.dart` and main files
 
 The `bootstrap.dart` file sets up essential configurations and initializes the app with specific setups for different environments (`main_development.dart`, `main_production.dart`, `main_staging.dart`). This is a very good benefit of using `Very Good CLI` as template to start the app.
 
 These entry points allow the app to be built with different configurations, depending on the target environment. This setup promotes flexibility, enabling better testing, debugging, and production builds.
 
-## Design Decisions Justification
+## Design Decisions
 
 ### Clean Architecture and Bloc
 
