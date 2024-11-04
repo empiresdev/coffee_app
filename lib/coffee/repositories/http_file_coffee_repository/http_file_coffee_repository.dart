@@ -16,7 +16,6 @@ final class HttpFileCoffeeRepository implements CoffeeRepository {
   }
 
   late http.Client _client;
-  final String apiUrl = 'https://coffee.alexflipnote.dev/random.json';
 
   static const _filenameIdentifier = 'image_';
   List<LocalCoffeeImage> _list = [];
