@@ -77,7 +77,7 @@ final class HttpFileCoffeeRepository implements CoffeeRepository {
     final directory = await getApplicationDocumentsDirectory();
     final imagesDir = Directory(path.join(directory.path, 'favorites'));
     if (!imagesDir.existsSync()) {
-      await imagesDir.create(recursive: true);
+      return imagesDir.create(recursive: true);
     }
     return imagesDir;
   }
